@@ -2,7 +2,10 @@ package mycontroller;
 
 import controller.CarController;
 import world.Car;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -11,7 +14,7 @@ import world.WorldSpatial;
 public class MyAutoController extends CarController{		
 		// How many minimum units the wall is away from the player.
 		private int wallSensitivity = 1;
-		
+		private HashMap<Coordinate,MapTile> map = getMap();
 		private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
 		
 		// Car Speed to move at
@@ -27,7 +30,8 @@ public class MyAutoController extends CarController{
 		public void update() {
 			// Gets what the car can see
 			HashMap<Coordinate, MapTile> currentView = getView();
-			
+//			Coordinate posit = new Coordinate(getPosition());
+//			ArrayList<CarState> successors = this.getSuccessors(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()));
 			// checkStateChange();
 			if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
 				applyForwardAcceleration();   // Tough luck if there's a wall in the way
@@ -149,36 +153,59 @@ public class MyAutoController extends CarController{
 			}
 			return false;
 		}
-//		private String turn90Degree(String direction) {
-//			switch (direction) {
-//				case "North":
-//					return "East";
-//				case "East":
-//					return "South";
-//				case "South":
-//					return "West";
-//				case "West":
-//					return "North";
-//			}
-//			return null;
-//		}
-		
-//		private String turn180Degree(String direction) {
-//			switch (direction) {
-//			case "North":
-//				return "South";
-//			case "East":
-//				return "West";
-//			case "South":
-//				return "North";
-//			case "West":
-//				return "East";
-//		}
-//		return null;
-//		}
-//		
-//		private String action(String orientation, String direction) {
-//			if 
-//			return null;
-//		}
+	private Coordinate move(Coordinate posit, WorldSpatial.Direction direct){
+		switch (direct){
+			case NORTH:
+				return new Coordinate(posit.x,posit.y+1);
+			case SOUTH:
+				return new Coordinate(posit.x,posit.y-1);
+			case EAST:
+				return new Coordinate(posit.x+1,posit.y);
+			case WEST:
+				return new Coordinate(posit.x-1,posit.y);
+		}
+		return null;
+	}
+
+	private ArrayList<CarState> getSuccessors(CarState carState){
+		ArrayList<CarState> successors = new ArrayList<CarState>();
+		WorldSpatial.Direction direct = carState.getDirec();
+		float speed = carState.getVelocity();
+		Coordinate posit = carState.getCoord();
+
+		switch ((int) speed){
+			case 1:
+				successors.add(new CarState(move(posit,WorldSpatial.changeDirection(
+						direct, WorldSpatial.RelativeDirection.LEFT)),
+						WorldSpatial.changeDirection(direct, WorldSpatial.RelativeDirection.LEFT),1));
+				successors.add(new CarState(move(posit,WorldSpatial.changeDirection(
+						direct, WorldSpatial.RelativeDirection.RIGHT)),
+						WorldSpatial.changeDirection(direct, WorldSpatial.RelativeDirection.RIGHT),1));
+				successors.add(new CarState(move(posit,direct), direct,1));
+				break;
+			case 0:
+				successors.add(new CarState(move(posit, WorldSpatial.reverseDirection(direct))
+						, WorldSpatial.reverseDirection(direct),-1));
+				successors.add(new CarState(move(posit,direct), direct,1));
+				break;
+			case -1:
+				successors.add(new CarState(move(posit,WorldSpatial.changeDirection(
+						direct, WorldSpatial.RelativeDirection.LEFT)),
+						WorldSpatial.changeDirection(direct, WorldSpatial.RelativeDirection.LEFT),-1));
+				successors.add(new CarState(move(posit,WorldSpatial.changeDirection(
+						direct, WorldSpatial.RelativeDirection.RIGHT)),
+						WorldSpatial.changeDirection(direct, WorldSpatial.RelativeDirection.RIGHT),-1));
+				successors.add(new CarState(move(posit, WorldSpatial.reverseDirection(direct))
+						, WorldSpatial.reverseDirection(direct),-1));
+				break;
+		}
+		Iterator<CarState> iter = successors.iterator();
+		while(iter.hasNext()){
+			CarState s = iter.next();
+			if(map.get(s.getCoord()).isType(MapTile.Type.WALL)){
+				iter.remove();
+			}
+		}
+		return successors;
+	}
 	}
