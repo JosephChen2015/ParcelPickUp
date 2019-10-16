@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/P2_ParcelPickup.zip_expanded.iml" filepath="$PROJECT_DIR$/P2_ParcelPickup.zip_expanded.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ParcelPickUp-SWEN30006.iml" filepath="$PROJECT_DIR$/ParcelPickUp-SWEN30006.iml" />
     </modules>
   </component>
 </project>
