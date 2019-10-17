@@ -7,7 +7,7 @@ public class CarState {
 	
 	private Coordinate coord;
 	private Direction direc;
-	private int velocity;
+	private float velocity;
 	
 	public Coordinate getCoord() {
 		return coord;
@@ -17,11 +17,11 @@ public class CarState {
 		return direc;
 	}
 
-	public int getVelocity() {
+	public float getVelocity() {
 		return velocity;
 	}
 
-	public CarState(Coordinate coord, Direction direc, int velocity) {
+	public CarState(Coordinate coord, Direction direc, float velocity) {
 		this.coord = coord;
 		this.direc = direc;
 		this.velocity = velocity;
