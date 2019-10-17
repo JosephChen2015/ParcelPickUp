@@ -217,20 +217,18 @@ public class MyAutoController extends CarController{
     }
 
     public String Astar(CarState myState, Coordinate goal) {
-        PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                NodeExpand n1 = (NodeExpand) o1;
-                NodeExpand n2 = (NodeExpand) o2;
-                if (n1.getCost() < n2.getCost()) {
-                    return -1;
-                } else if (n1.getCost() > n2.getCost()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
+            NodeExpand n1 = (NodeExpand) o1;
+            NodeExpand n2 = (NodeExpand) o2;
+            if (n1.getCost() < n2.getCost()) {
+                return -1;
+            } else if (n1.getCost() > n2.getCost()) {
+                return 1;
+            } else {
+                return 0;
             }
         });
-        ArrayList<CarState> closeList = new ArrayList<CarState>();
+        ArrayList<Coordinate> closeList = new ArrayList<Coordinate>();
 
         ArrayList<CarState> trace = new ArrayList<CarState>();
         NodeExpand node = new NodeExpand(myState, trace, 0);
@@ -241,16 +239,17 @@ public class MyAutoController extends CarController{
         while (!openList.isEmpty()) {
             NodeExpand currentNode = openList.poll();
             CarState currentState = currentNode.getState();
-            if (currentNode.getState().getCoord() == goal) {
+            trace = currentNode.getTrace();
+            if (currentNode.getState().getCoord().equals(goal)) {
                 if (trace.size() == 0) {
                     return "STOP";
                 }
                 return trace.get(0).getDirec().toString();
             }
 
-            if (!closeList.contains(currentState)) {
+            if (!closeList.contains(currentState.getCoord())) {
                 successors.clear();
-                closeList.add(currentState);
+                closeList.add(currentState.getCoord());
                 successors = getSuccessors(currentState);
                 for (CarState temp : successors) {
                     Coordinate nextPos = temp.getCoord();
@@ -259,7 +258,7 @@ public class MyAutoController extends CarController{
                     int cost = currentNode.getCost() + 1;
                     CarState nextState = new CarState(nextPos, nextDirec, nextVelocity);
                     int Priority = cost + Heurisitic(currentState.getCoord(), goal);
-                    if (!closeList.contains(nextState)) {
+                    if (!closeList.contains(nextState.getCoord())) {
                         currentNode.getTrace().add(nextState);
                         ArrayList<CarState> nextTrace = (ArrayList<CarState>) currentNode.getTrace().clone();
                         NodeExpand nextNode = new NodeExpand(nextState, nextTrace, Priority);
