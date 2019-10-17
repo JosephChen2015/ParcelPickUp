@@ -30,31 +30,51 @@ public class MyAutoController extends CarController{
         HashMap<Coordinate, MapTile> currentView = getView();
         Coordinate goal = new Coordinate(1,17);
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed());
-        String a = Astar(car, goal);
-        System.out.println(1);
+        CarState a = Astar(car, goal);
+        WorldSpatial.Direction direction = a.getDirec();
+        Coordinate coord = a.getCoord();
+        float speed = a.getVelocity();
+
+        if (getSpeed()<speed){
+            applyForwardAcceleration();
+        }
+        else if (getSpeed()>speed){
+            applyReverseAcceleration();
+        }
+
+        if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.LEFT))){
+            turnLeft();
+        }
+        else if(direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.RIGHT))){
+            turnRight();
+        }
+
+
+
+//        System.out.println(1);
 //			Coordinate posit = new Coordinate(getPosition());
 //			ArrayList<CarState> successors = this.getSuccessors(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()));
         // checkStateChange();
-        if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
-            applyForwardAcceleration();   // Tough luck if there's a wall in the way
-        }
-        if (isFollowingWall) {
-            // If wall no longer on left, turn left
-            if(!checkFollowingWall(getOrientation(), currentView)) {
-                turnLeft();
-            } else {
-                // If wall on left and wall straight ahead, turn right
-                if(checkWallAhead(getOrientation(), currentView)) {
-                    turnRight();
-                }
-            }
-        } else {
-            // Start wall-following (with wall on left) as soon as we see a wall straight ahead
-            if(checkWallAhead(getOrientation(),currentView)) {
-                turnRight();
-                isFollowingWall = true;
-            }
-        }
+//        if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
+//            applyForwardAcceleration();   // Tough luck if there's a wall in the way
+//        }
+//        if (isFollowingWall) {
+//            // If wall no longer on left, turn left
+//            if(!checkFollowingWall(getOrientation(), currentView)) {
+//                turnLeft();
+//            } else {
+//                // If wall on left and wall straight ahead, turn right
+//                if(checkWallAhead(getOrientation(), currentView)) {
+//                    turnRight();
+//                }
+//            }
+//        } else {
+//            // Start wall-following (with wall on left) as soon as we see a wall straight ahead
+//            if(checkWallAhead(getOrientation(),currentView)) {
+//                turnRight();
+//                isFollowingWall = true;
+//            }
+//        }
     }
 
     /**
@@ -216,7 +236,7 @@ public class MyAutoController extends CarController{
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
     }
 
-    public String Astar(CarState myState, Coordinate goal) {
+    public CarState Astar(CarState myState, Coordinate goal) {
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
             NodeExpand n1 = (NodeExpand) o1;
             NodeExpand n2 = (NodeExpand) o2;
@@ -242,9 +262,9 @@ public class MyAutoController extends CarController{
             trace = currentNode.getTrace();
             if (currentNode.getState().getCoord().equals(goal)) {
                 if (trace.size() == 0) {
-                    return "STOP";
+                    return null;
                 }
-                return trace.get(0).getDirec().toString();
+                return trace.get(0);
             }
 
             if (!closeList.contains(currentState.getCoord())) {
@@ -259,8 +279,9 @@ public class MyAutoController extends CarController{
                     CarState nextState = new CarState(nextPos, nextDirec, nextVelocity);
                     int Priority = cost + Heurisitic(currentState.getCoord(), goal);
                     if (!closeList.contains(nextState.getCoord())) {
-                        currentNode.getTrace().add(nextState);
+
                         ArrayList<CarState> nextTrace = (ArrayList<CarState>) currentNode.getTrace().clone();
+                        nextTrace.add(nextState);
                         NodeExpand nextNode = new NodeExpand(nextState, nextTrace, Priority);
                         openList.add(nextNode);
                     }
@@ -268,7 +289,7 @@ public class MyAutoController extends CarController{
             }
 
         }
-        return "STOP";
+        return null;
     }
 
 }
