@@ -11,4 +11,6 @@
 /build
 /captures
 .externalNativeBuild
-.properties
+/assets/Driving.properties
+/out
+/src/log4j2.xml
