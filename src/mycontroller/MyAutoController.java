@@ -19,7 +19,7 @@ public class MyAutoController extends CarController{
 
     // Car Speed to move at
     private final int CAR_MAX_SPEED = 1;
-    
+
     public MyAutoController(Car car) {
         super(car);
     }
