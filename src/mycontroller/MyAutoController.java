@@ -3,9 +3,7 @@ package mycontroller;
 import controller.CarController;
 import world.Car;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -30,6 +28,10 @@ public class MyAutoController extends CarController{
     public void update() {
         // Gets what the car can see
         HashMap<Coordinate, MapTile> currentView = getView();
+        Coordinate goal = new Coordinate(1,17);
+        CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed());
+        String a = Astar(car, goal);
+        System.out.println(1);
 //			Coordinate posit = new Coordinate(getPosition());
 //			ArrayList<CarState> successors = this.getSuccessors(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()));
         // checkStateChange();
@@ -209,4 +211,65 @@ public class MyAutoController extends CarController{
 		}
 		return successors;
 	}
+    public int Heurisitic(Coordinate pos1, Coordinate pos2)
+    {
+        return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
+    }
+
+    public String Astar(CarState myState, Coordinate goal) {
+        PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                NodeExpand n1 = (NodeExpand) o1;
+                NodeExpand n2 = (NodeExpand) o2;
+                if (n1.getCost() < n2.getCost()) {
+                    return -1;
+                } else if (n1.getCost() > n2.getCost()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        ArrayList<CarState> closeList = new ArrayList<CarState>();
+
+        ArrayList<CarState> trace = new ArrayList<CarState>();
+        NodeExpand node = new NodeExpand(myState, trace, 0);
+        openList.add(node);
+
+        ArrayList<CarState> successors = new ArrayList<CarState>();
+
+        while (!openList.isEmpty()) {
+            NodeExpand currentNode = openList.poll();
+            CarState currentState = currentNode.getState();
+            if (currentNode.getState().getCoord() == goal) {
+                if (trace.size() == 0) {
+                    return "STOP";
+                }
+                return trace.get(0).getDirec().toString();
+            }
+
+            if (!closeList.contains(currentState)) {
+                successors.clear();
+                closeList.add(currentState);
+                successors = getSuccessors(currentState);
+                for (CarState temp : successors) {
+                    Coordinate nextPos = temp.getCoord();
+                    WorldSpatial.Direction nextDirec = temp.getDirec();
+                    float nextVelocity = temp.getVelocity();
+                    int cost = currentNode.getCost() + 1;
+                    CarState nextState = new CarState(nextPos, nextDirec, nextVelocity);
+                    int Priority = cost + Heurisitic(currentState.getCoord(), goal);
+                    if (!closeList.contains(nextState)) {
+                        currentNode.getTrace().add(nextState);
+                        ArrayList<CarState> nextTrace = (ArrayList<CarState>) currentNode.getTrace().clone();
+                        NodeExpand nextNode = new NodeExpand(nextState, nextTrace, Priority);
+                        openList.add(nextNode);
+                    }
+                }
+            }
+
+        }
+        return "STOP";
+    }
+
 }
