@@ -17,6 +17,8 @@ public class MyAutoController extends CarController {
     private HashMap<Coordinate, MapTile> map = getMap();
     private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
     private ExploreStrategy exploreStrategy;
+    private ParcelStrategy parcelStrategy;
+    private DeliverStrategy deliverStrategy;
 
     public MyAutoController(Car car) {
         super(car);
@@ -40,8 +42,30 @@ public class MyAutoController extends CarController {
         HashMap<Coordinate, MapTile> currentView = getView();
         HashMap<Coordinate, Boolean> explored = exploreStrategy.update(currentView);
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
-        Coordinate goal = exploreStrategy.goal(new Coordinate(getPosition()));
+        parcelStrategy = new ParcelStrategy(exploreStrategy.getParcels(), new Coordinate(getPosition()));
+        deliverStrategy = new DeliverStrategy(getMap(), new Coordinate(getPosition()));
+        Coordinate goal;
+        int eaten = 0;
+        Coordinate myPos = new Coordinate(getPosition());
+        if(parcels.containsKey(myPos))
+        {
+            parcels.remove(myPos);
+        }
 
+        if(numParcels() - numParcelsFound()>0)
+        {
+            if(parcels.size() != 0)
+            {
+                goal = parcelStrategy.getGoal();
+            }
+            else {
+                goal = exploreStrategy.goal(new Coordinate(getPosition()));
+            }
+        }
+        else
+        {
+            goal = deliverStrategy.getGoal();
+        }
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed());
         CarState a = Astar(car, goal);
         if (a != null) {
