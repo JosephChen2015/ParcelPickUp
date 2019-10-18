@@ -26,6 +26,15 @@ public class CarState {
 		this.direc = direc;
 		this.velocity = velocity;
 	}
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		CarState car = (CarState) obj;
+		if (this.getCoord().equals(car.getCoord())){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }
