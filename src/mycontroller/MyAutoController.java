@@ -10,11 +10,11 @@ import world.WorldSpatial;
 public class MyAutoController extends CarController {
 
     private HashMap<Coordinate, MapTile> map = getMap();
-    private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
     private SearchRoute searchRoute = new SearchRoute(this.map);
+
     public MyAutoController(Car car) {
         super(car);
         this.exploreStrategy = new ExploreStrategy(getMap());
@@ -25,10 +25,6 @@ public class MyAutoController extends CarController {
         }
     }
 
-
-
-    // Coordinate initialGuess;
-    // boolean notSouth = true;
     @Override
     public void update() {
         exploreStrategy.update(getView());
@@ -78,9 +74,4 @@ public class MyAutoController extends CarController {
             }
         }
     }
-
-
-
-
-
 }
