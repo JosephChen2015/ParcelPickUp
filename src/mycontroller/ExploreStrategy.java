@@ -55,9 +55,4 @@ public class ExploreStrategy {
     public HashMap<Coordinate, MapTile> getParcels() {
         return parcels;
     }
-    public void pickUp(Coordinate position){
-        if (this.parcels.containsKey(position)){
-            parcels.remove(position);
-        }
-    }
 }
