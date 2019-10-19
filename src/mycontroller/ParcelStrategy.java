@@ -2,10 +2,10 @@ package mycontroller;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-
 import java.util.HashMap;
 
 public class ParcelStrategy implements Strategy {
+
     private Coordinate parcel = null;
 
     public ParcelStrategy(HashMap<Coordinate, MapTile> parcels, Coordinate myPosit)
@@ -15,7 +15,7 @@ public class ParcelStrategy implements Strategy {
         for (Coordinate temp: parcels.keySet())
         {
             int tempDis = MyAutoController.Heurisitic(temp, myPosit);
-            if( tempDis > max)
+            if(tempDis > max)
             {
                 max = tempDis;
                 parcel = temp;
