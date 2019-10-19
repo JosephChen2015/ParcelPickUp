@@ -3,12 +3,12 @@ package mycontroller;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
-
 import java.util.*;
 
 public class SearchRoute{
 
 	private HashMap<Coordinate, MapTile> map;
+
 	public SearchRoute(HashMap<Coordinate, MapTile> map) {
 		this.map = map;
 	}
@@ -133,8 +133,6 @@ public class SearchRoute{
 		}
 		return null;
 	}
-
-
 }
 
 
