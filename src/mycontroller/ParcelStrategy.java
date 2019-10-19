@@ -14,7 +14,7 @@ public class ParcelStrategy implements Strategy {
         Coordinate parcel = myPosit;
         for (Coordinate temp: parcels.keySet())
         {
-            int tempDis = MyAutoController.Heurisitic(temp, myPosit);
+            int tempDis = Math.abs(temp.x - myPosit.x) + Math.abs(temp.y - myPosit.y);;
             if(tempDis > max)
             {
                 max = tempDis;

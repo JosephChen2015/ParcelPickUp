@@ -24,7 +24,8 @@ public class DeliverStrategy implements Strategy{
         Coordinate exit = myPosit;
         for (Coordinate temp: exits)
         {
-            int tempDis = MyAutoController.Heurisitic(temp, myPosit);
+            int tempDis =
+            Math.abs(temp.x - myPosit.x) + Math.abs(temp.y - myPosit.y);
             if( tempDis > max)
             {
                 max = tempDis;

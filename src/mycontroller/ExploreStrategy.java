@@ -42,7 +42,7 @@ public class ExploreStrategy {
         Coordinate goal = new Coordinate(0,0);
         for (Coordinate coord : explore.keySet()){
             if (!explore.get(coord)){
-                int dis = MyAutoController.Heurisitic(posit, coord);
+                int dis =  Math.abs(posit.x - coord.x) + Math.abs(posit.y - coord.y);
                 if (minDis>dis){
                     minDis = dis;
                     goal = coord;
@@ -54,5 +54,10 @@ public class ExploreStrategy {
 
     public HashMap<Coordinate, MapTile> getParcels() {
         return parcels;
+    }
+    public void pickUp(Coordinate position){
+        if (this.parcels.containsKey(position)){
+            parcels.remove(position);
+        }
     }
 }
