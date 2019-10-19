@@ -34,7 +34,6 @@ public class MyAutoController extends CarController {
         Coordinate goal;
         Coordinate myPos = new Coordinate(getPosition());
 
-
         if(parcels.containsKey(myPos))
         {
             parcels.remove(myPos);
