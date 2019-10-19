@@ -2,12 +2,12 @@ package mycontroller;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DeliverStrategy implements Strategy{
+
     private Coordinate exit = null;
 
     public DeliverStrategy(HashMap<Coordinate, MapTile> explored, Coordinate myPosit)

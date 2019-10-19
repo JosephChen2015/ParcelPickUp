@@ -3,10 +3,10 @@ package mycontroller;
 import tiles.MapTile;
 import tiles.TrapTile;
 import utilities.Coordinate;
-
 import java.util.HashMap;
 
 public class ExploreStrategy {
+
     private HashMap<Coordinate, MapTile> parcels = new HashMap<Coordinate, MapTile>();
     private HashMap<Coordinate, Boolean> explore = new HashMap<Coordinate, Boolean>();
 
@@ -24,7 +24,7 @@ public class ExploreStrategy {
                 this.explore.remove(coord);
                 this.explore.put(coord, true);
                 if (observe.get(coord).isType(MapTile.Type.TRAP)){
-                    if (((TrapTile )observe.get(coord)).getTrap().equals("parcel")){
+                    if (((TrapTile)observe.get(coord)).getTrap().equals("parcel")){
                         this.parcels.put(coord,observe.get(coord));
                     }
                 }

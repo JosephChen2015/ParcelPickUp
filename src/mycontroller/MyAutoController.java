@@ -2,20 +2,14 @@ package mycontroller;
 
 import controller.CarController;
 import world.Car;
-
 import java.util.*;
-
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
 
 public class MyAutoController extends CarController {
-    // Car Speed to move at
-    private final int CAR_MAX_SPEED = 1;
-    // How many minimum units the wall is away from the player.
-    private int wallSensitivity = 1;
+
     private HashMap<Coordinate, MapTile> map = getMap();
-    private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
@@ -24,7 +18,7 @@ public class MyAutoController extends CarController {
         super(car);
         this.exploreStrategy = new ExploreStrategy(getMap());
         for (Coordinate coord : map.keySet()){
-            if (Astar(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()), coord) == null){
+            if (aStar(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()), coord) == null){
                 exploreStrategy.remove(coord);
             }
         }
@@ -34,25 +28,21 @@ public class MyAutoController extends CarController {
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
     }
 
-    // Coordinate initialGuess;
-    // boolean notSouth = true;
     @Override
     public void update() {
-        // Gets what the car can see
-        HashMap<Coordinate, MapTile> currentView = getView();
-        HashMap<Coordinate, Boolean> explored = exploreStrategy.update(currentView);
+
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
         parcelStrategy = new ParcelStrategy(exploreStrategy.getParcels(), new Coordinate(getPosition()));
         deliverStrategy = new DeliverStrategy(getMap(), new Coordinate(getPosition()));
         Coordinate goal;
-        int eaten = 0;
         Coordinate myPos = new Coordinate(getPosition());
+
         if(parcels.containsKey(myPos))
         {
             parcels.remove(myPos);
         }
 
-        if(numParcels() - numParcelsFound()>0)
+        if(numParcels() - numParcelsFound() > 0)
         {
             if(parcels.size() != 0)
             {
@@ -66,11 +56,11 @@ public class MyAutoController extends CarController {
         {
             goal = deliverStrategy.getGoal();
         }
+
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed());
-        CarState a = Astar(car, goal);
+        CarState a = aStar(car, goal);
         if (a != null) {
             WorldSpatial.Direction direction = a.getDirec();
-            Coordinate coord = a.getCoord();
             float speed = a.getVelocity();
 
             if (getSpeed() < speed) {
@@ -85,7 +75,6 @@ public class MyAutoController extends CarController {
                 turnRight();
             }
         }
-
     }
 
     private Coordinate move(Coordinate posit, WorldSpatial.Direction direct) {
@@ -103,6 +92,7 @@ public class MyAutoController extends CarController {
     }
 
     private ArrayList<CarState> getSuccessors(CarState carState) {
+
         ArrayList<CarState> successors = new ArrayList<CarState>();
         WorldSpatial.Direction direct = carState.getDirec();
         float speed = carState.getVelocity();
@@ -119,11 +109,13 @@ public class MyAutoController extends CarController {
                 successors.add(new CarState(move(posit, direct), direct, 1));
                 successors.add(new CarState(posit, direct, 0));
                 break;
+
             case 0:
                 successors.add(new CarState(move(posit, WorldSpatial.reverseDirection(direct))
                         , direct, -1));
                 successors.add(new CarState(move(posit, direct), direct, 1));
                 break;
+
             case -1:
                 successors.add(new CarState(move(posit, WorldSpatial.changeDirection(
                         direct, WorldSpatial.RelativeDirection.RIGHT)),
@@ -136,6 +128,7 @@ public class MyAutoController extends CarController {
                 successors.add(new CarState(posit, direct, 0));
                 break;
         }
+
         Iterator<CarState> iter = successors.iterator();
         while (iter.hasNext()) {
             CarState s = iter.next();
@@ -146,7 +139,8 @@ public class MyAutoController extends CarController {
         return successors;
     }
 
-    public CarState Astar(CarState myState, Coordinate goal) {
+    public CarState aStar(CarState myState, Coordinate goal) {
+
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
             NodeExpand n1 = (NodeExpand) o1;
             NodeExpand n2 = (NodeExpand) o2;
@@ -158,12 +152,11 @@ public class MyAutoController extends CarController {
                 return 0;
             }
         });
-        ArrayList<Coordinate> closeList = new ArrayList<Coordinate>();
 
+        ArrayList<Coordinate> closeList = new ArrayList<Coordinate>();
         ArrayList<CarState> trace = new ArrayList<CarState>();
         NodeExpand node = new NodeExpand(myState, trace, 0);
         openList.add(node);
-
         ArrayList<CarState> successors = new ArrayList<CarState>();
 
         while (!openList.isEmpty()) {
@@ -200,5 +193,4 @@ public class MyAutoController extends CarController {
         }
         return null;
     }
-
 }

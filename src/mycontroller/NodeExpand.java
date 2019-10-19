@@ -3,6 +3,7 @@ package mycontroller;
 import java.util.ArrayList;
 
 public class NodeExpand {
+
 	private CarState state;
 	private ArrayList<CarState> trace;
 	private int cost;
