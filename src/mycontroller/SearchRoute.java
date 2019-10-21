@@ -14,11 +14,11 @@ public class SearchRoute {
         this.map = map;
     }
 
-    public int Heurisitic(Coordinate pos1, Coordinate pos2) {
+    private int Heurisitic(Coordinate pos1, Coordinate pos2) {
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
     }
 
-    public static Coordinate move(Coordinate posit, WorldSpatial.Direction direct) {
+    private static Coordinate move(Coordinate posit, WorldSpatial.Direction direct) {
         switch (direct) {
             case NORTH:
                 return new Coordinate(posit.x, posit.y + 1);
@@ -81,7 +81,7 @@ public class SearchRoute {
     }
 
 
-    public CarState aStarPlus(CarState myState, Coordinate goal) {
+    private CarState aStarPlus(CarState myState, Coordinate goal) {
 
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
             NodeExpand n1 = (NodeExpand) o1;
