@@ -24,10 +24,9 @@ public class MyAutoController extends CarController {
         super(car);
 
         this.strategyFactory = StrategyFactory.getInstance();
-        this.strategyFactory.init(getMap());
         this.parcelStrategy = this.strategyFactory.getParcelStrategy();
-        this.exploreStrategy = this.strategyFactory.getExploreStrategy();
-        this.deliverStrategy = this.strategyFactory.getDeliverStrategy();
+        this.exploreStrategy = this.strategyFactory.getExploreStrategy(getMap());
+        this.deliverStrategy = this.strategyFactory.getDeliverStrategy(getMap());
         this.compositeStrategy = this.strategyFactory.getCompositeStrategy();
         compositeStrategy.addStrategy(parcelStrategy);
         compositeStrategy.addStrategy(exploreStrategy);
@@ -45,11 +44,14 @@ public class MyAutoController extends CarController {
 
     @Override
     public void update() {
-        if(numParcels()-numParcelsFound()>0)
+        if (getSpeed() == 0){
+            this.speed = 0;
+        }
+        if(numParcels()-numParcelsFound()==0)
         {
             allCollected = true;
         }
-        compositeStrategy.update(getView(), allCollected);
+        compositeStrategy.update(getView(), allCollected,new Coordinate(getPosition()));
         Coordinate goal = compositeStrategy.getGoal(new Coordinate(getPosition()));
 
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), this.speed);
