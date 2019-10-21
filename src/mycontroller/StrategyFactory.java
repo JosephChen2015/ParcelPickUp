@@ -32,31 +32,35 @@ public class StrategyFactory {
         return instance;
     }
 
-    public ExploreStrategy getExploreStrategy(HashMap<Coordinate, MapTile> map) {
-        if (exploreStrategy == null){
-            this.exploreStrategy = new ExploreStrategy(map);
+    public IStrategy getStrategy(String name, HashMap<Coordinate, MapTile> map) {
+        IStrategy strategy = null;
+        switch (name){
+            case "ExploreStrategy":
+                if (exploreStrategy == null){
+                    this.exploreStrategy = new ExploreStrategy(map);
+                }
+                strategy = this.exploreStrategy;
+                break;
+            case "ParcelStrategy":
+                if (parcelStrategy == null){
+                    this.parcelStrategy = new ParcelStrategy();
+                }
+                strategy = this.parcelStrategy;
+                break;
+            case "DeliverStrategy":
+                if (deliverStrategy == null){
+                    this.deliverStrategy = new DeliverStrategy(map);
+                }
+                strategy = this.deliverStrategy;
+                break;
+            case "CompositeStrategy":
+                if (compositeStrategy == null){
+                    this.compositeStrategy = new CompositeStrategy();
+                }
+                strategy = this.compositeStrategy;
+                break;
         }
-        return exploreStrategy;
+        return strategy;
     }
 
-    public ParcelStrategy getParcelStrategy() {
-        if (parcelStrategy == null){
-            this.parcelStrategy = new ParcelStrategy();
-        }
-        return parcelStrategy;
-    }
-
-    public DeliverStrategy getDeliverStrategy(HashMap<Coordinate, MapTile> map) {
-        if (deliverStrategy == null){
-            this.deliverStrategy = new DeliverStrategy(map);
-        }
-        return deliverStrategy;
-    }
-
-    public CompositeStrategy getCompositeStrategy() {
-        if (compositeStrategy == null){
-            this.compositeStrategy = new CompositeStrategy();
-        }
-        return compositeStrategy;
-    }
 }

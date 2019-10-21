@@ -24,10 +24,10 @@ public class MyAutoController extends CarController {
         super(car);
 
         this.strategyFactory = StrategyFactory.getInstance();
-        this.parcelStrategy = this.strategyFactory.getParcelStrategy();
-        this.exploreStrategy = this.strategyFactory.getExploreStrategy(getMap());
-        this.deliverStrategy = this.strategyFactory.getDeliverStrategy(getMap());
-        this.compositeStrategy = this.strategyFactory.getCompositeStrategy();
+        this.parcelStrategy = (ParcelStrategy) this.strategyFactory.getStrategy("ParcelStrategy",getView());
+        this.exploreStrategy = (ExploreStrategy) this.strategyFactory.getStrategy("ExploreStrategy",getMap());
+        this.deliverStrategy = (DeliverStrategy)this.strategyFactory.getStrategy("DeliverStrategy",getMap());
+        this.compositeStrategy = (CompositeStrategy) this.strategyFactory.getStrategy("CompositeStrategy",getView());
         compositeStrategy.addStrategy(parcelStrategy);
         compositeStrategy.addStrategy(exploreStrategy);
         compositeStrategy.addStrategy(deliverStrategy);
