@@ -10,29 +10,36 @@ import world.WorldSpatial;
 public class MyAutoController extends CarController {
 
     private HashMap<Coordinate, MapTile> map = getMap();
+
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
     private SearchRoute searchRoute = new SearchRoute(this.map);
+    private int speed;
 
     public MyAutoController(Car car) {
         super(car);
         this.exploreStrategy = new ExploreStrategy(getMap());
         for (Coordinate coord : map.keySet()){
-            if (searchRoute.aStar(new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed()), coord) == null){
+            if (searchRoute.aStar(new CarState(new Coordinate(getPosition()), getOrientation(), 0), coord) == null){
                 exploreStrategy.remove(coord);
             }
         }
+        this.parcelStrategy = new ParcelStrategy();
+        this.deliverStrategy = new DeliverStrategy(getMap());
+        this.speed = 0;
     }
 
     @Override
     public void update() {
+        if (getSpeed()==0){
+            this.speed = 0;
+        }
         exploreStrategy.update(getView());
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
-        parcelStrategy = new ParcelStrategy(exploreStrategy.getParcels(), new Coordinate(getPosition()));
-        deliverStrategy = new DeliverStrategy(getMap(), new Coordinate(getPosition()));
         Coordinate goal;
         Coordinate myPos = new Coordinate(getPosition());
+        parcelStrategy.update(parcels);
 
         if(parcels.containsKey(myPos))
         {
@@ -43,27 +50,29 @@ public class MyAutoController extends CarController {
         {
             if(parcels.size() != 0)
             {
-                goal = parcelStrategy.getGoal();
+                goal = parcelStrategy.getGoal(new Coordinate(getPosition()));
             }
             else {
-                goal = exploreStrategy.goal(new Coordinate(getPosition()));
+                goal = exploreStrategy.getGoal(new Coordinate(getPosition()));
             }
         }
         else
         {
-            goal = deliverStrategy.getGoal();
+            goal = deliverStrategy.getGoal(new Coordinate(getPosition()));
         }
 
-        CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), getSpeed());
+        CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), this.speed);
         CarState a = searchRoute.aStar(car, goal);
         if (a != null) {
             WorldSpatial.Direction direction = a.getDirec();
             float speed = a.getVelocity();
 
-            if (getSpeed() < speed) {
+            if (this.speed < speed) {
                 applyForwardAcceleration();
-            } else if (getSpeed() > speed) {
+                this.speed += 1;
+            } else if (this.speed > speed) {
                 applyReverseAcceleration();
+                this.speed -= 1;
             }
 
             if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.LEFT))) {

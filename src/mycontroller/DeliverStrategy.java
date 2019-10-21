@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeliverStrategy implements Strategy{
+public class DeliverStrategy implements IStrategy{
 
     private ArrayList<Coordinate> exits;
 
@@ -22,20 +22,21 @@ public class DeliverStrategy implements Strategy{
         }
     }
 
-    public Coordinate getGoal( Coordinate myPosit)
+    @Override
+    public Coordinate getGoal(Coordinate myPosit)
     {
-        int max = 0;
-        Coordinate exit = myPosit;
+        int min = 99999;
+        Coordinate goal = null;
         for (Coordinate temp: exits)
         {
             int tempDis =
                     Math.abs(temp.x - myPosit.x) + Math.abs(temp.y - myPosit.y);
-            if( tempDis > max)
+            if( tempDis < min)
             {
-                max = tempDis;
-                exit = temp;
+                min = tempDis;
+                goal = temp;
             }
         }
-        return exit;
+        return goal;
     }
 }

@@ -2,7 +2,7 @@ package mycontroller;
 
 import utilities.Coordinate;
 
-public interface Strategy {
+public interface IStrategy {
 
     public Coordinate getGoal(Coordinate myPosit);
 }

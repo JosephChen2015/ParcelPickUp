@@ -5,7 +5,7 @@ import tiles.TrapTile;
 import utilities.Coordinate;
 import java.util.HashMap;
 
-public class ExploreStrategy {
+public class ExploreStrategy implements IStrategy{
 
     private HashMap<Coordinate, MapTile> parcels = new HashMap<Coordinate, MapTile>();
     private HashMap<Coordinate, Boolean> explore = new HashMap<Coordinate, Boolean>();
@@ -37,7 +37,8 @@ public class ExploreStrategy {
         this.explore.remove(coord);
     }
 
-    public Coordinate goal(Coordinate posit){
+    @Override
+    public Coordinate getGoal(Coordinate posit){
         int minDis = 99999;
         Coordinate goal = new Coordinate(0,0);
         for (Coordinate coord : explore.keySet()){
