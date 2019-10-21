@@ -15,8 +15,10 @@ public class MyAutoController extends CarController {
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
+    private CompositeStrategy compositeStrategy;
     private SearchRoute searchRoute = new SearchRoute(this.map);
     private int speed;
+    private boolean allCollected = false;
 
     public MyAutoController(Car car) {
         super(car);
@@ -26,6 +28,10 @@ public class MyAutoController extends CarController {
         this.parcelStrategy = this.strategyFactory.getParcelStrategy();
         this.exploreStrategy = this.strategyFactory.getExploreStrategy();
         this.deliverStrategy = this.strategyFactory.getDeliverStrategy();
+        this.compositeStrategy = this.strategyFactory.getCompositeStrategy();
+        compositeStrategy.addStrategy(parcelStrategy);
+        compositeStrategy.addStrategy(exploreStrategy);
+        compositeStrategy.addStrategy(deliverStrategy);
 
 
         for (Coordinate coord : map.keySet()){
@@ -39,34 +45,12 @@ public class MyAutoController extends CarController {
 
     @Override
     public void update() {
-        if (getSpeed()==0){
-            this.speed = 0;
-        }
-        exploreStrategy.update(getView());
-        HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
-        Coordinate goal;
-        Coordinate myPos = new Coordinate(getPosition());
-        parcelStrategy.update(parcels);
-
-        if(parcels.containsKey(myPos))
+        if(numParcels()-numParcelsFound()>0)
         {
-            parcels.remove(myPos);
+            allCollected = true;
         }
-
-        if(numParcels() - numParcelsFound() > 0)
-        {
-            if(parcels.size() != 0)
-            {
-                goal = parcelStrategy.getGoal(new Coordinate(getPosition()));
-            }
-            else {
-                goal = exploreStrategy.getGoal(new Coordinate(getPosition()));
-            }
-        }
-        else
-        {
-            goal = deliverStrategy.getGoal(new Coordinate(getPosition()));
-        }
+        compositeStrategy.update(getView(), allCollected);
+        Coordinate goal = compositeStrategy.getGoal(new Coordinate(getPosition()));
 
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), this.speed);
         CarState a = searchRoute.aStar(car, goal);

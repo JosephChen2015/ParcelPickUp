@@ -10,6 +10,7 @@ public class StrategyFactory {
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
+    private CompositeStrategy compositeStrategy;
 
     private static StrategyFactory instance;
 
@@ -21,6 +22,7 @@ public class StrategyFactory {
         this.parcelStrategy = new ParcelStrategy();
         this.deliverStrategy = new DeliverStrategy(map);
         this.exploreStrategy = new ExploreStrategy(map);
+        this.compositeStrategy = new CompositeStrategy();
     }
 
     public static StrategyFactory getInstance(){
@@ -40,5 +42,9 @@ public class StrategyFactory {
 
     public DeliverStrategy getDeliverStrategy() {
         return deliverStrategy;
+    }
+
+    public CompositeStrategy getCompositeStrategy() {
+        return compositeStrategy;
     }
 }
