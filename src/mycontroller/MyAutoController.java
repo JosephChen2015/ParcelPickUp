@@ -11,6 +11,7 @@ public class MyAutoController extends CarController {
 
     private HashMap<Coordinate, MapTile> map = getMap();
 
+    private StrategyFactory strategyFactory;
     private ExploreStrategy exploreStrategy;
     private ParcelStrategy parcelStrategy;
     private DeliverStrategy deliverStrategy;
@@ -19,14 +20,20 @@ public class MyAutoController extends CarController {
 
     public MyAutoController(Car car) {
         super(car);
-        this.exploreStrategy = new ExploreStrategy(getMap());
+
+        this.strategyFactory = StrategyFactory.getInstance();
+        this.strategyFactory.init(getMap());
+        this.parcelStrategy = this.strategyFactory.getParcelStrategy();
+        this.exploreStrategy = this.strategyFactory.getExploreStrategy();
+        this.deliverStrategy = this.strategyFactory.getDeliverStrategy();
+
+
         for (Coordinate coord : map.keySet()){
             if (searchRoute.aStar(new CarState(new Coordinate(getPosition()), getOrientation(), 0), coord) == null){
                 exploreStrategy.remove(coord);
             }
         }
-        this.parcelStrategy = new ParcelStrategy();
-        this.deliverStrategy = new DeliverStrategy(getMap());
+
         this.speed = 0;
     }
 
