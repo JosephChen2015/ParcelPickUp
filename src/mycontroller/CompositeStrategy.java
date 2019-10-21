@@ -17,21 +17,19 @@ public class CompositeStrategy implements IStrategy{
         DeliverStrategy deliverStrategy = null;
         for(IStrategy strategy: strategies)
         {
-            switch (strategy.getClass().toString()) {
-                case "ExploreStrategy":
-                    exploreStrategy = (ExploreStrategy) strategy;
-                    break;
-                case "ParcelStrategy":
-                    parcelStrategy = (ParcelStrategy) strategy;
-                    break;
-                case "DeliverStrategy":
-                    deliverStrategy = (DeliverStrategy) strategy;
-                    break;
+            if (strategy instanceof ExploreStrategy){
+                exploreStrategy = (ExploreStrategy) strategy;
+            }
+            else if (strategy instanceof ParcelStrategy){
+                parcelStrategy = (ParcelStrategy) strategy;
+            }
+            else if (strategy instanceof DeliverStrategy){
+                deliverStrategy = (DeliverStrategy) strategy;
             }
         }
         Coordinate goal;
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
-        if(allCollected)
+        if(!allCollected)
         {
             if(parcels.size() != 0)
             {
@@ -48,7 +46,7 @@ public class CompositeStrategy implements IStrategy{
         return goal;
     }
 
-    public void update(HashMap<Coordinate, MapTile> view, boolean allCollected)
+    public void update(HashMap<Coordinate, MapTile> view, boolean allCollected,Coordinate myPos)
     {
         this.allCollected = allCollected;
         ExploreStrategy exploreStrategy = null;
@@ -56,21 +54,24 @@ public class CompositeStrategy implements IStrategy{
         DeliverStrategy deliverStrategy;
         for(IStrategy strategy: strategies)
         {
-            switch (strategy.getClass().toString()) {
-                case "ExploreStrategy":
-                    exploreStrategy = (ExploreStrategy) strategy;
-                    break;
-                case "ParcelStrategy":
-                    parcelStrategy = (ParcelStrategy) strategy;
-                    break;
-                case "DeliverStrategy":
-                    deliverStrategy = (DeliverStrategy) strategy;
-                    break;
+            if (strategy instanceof ExploreStrategy){
+                exploreStrategy = (ExploreStrategy) strategy;
             }
+            else if (strategy instanceof ParcelStrategy){
+                parcelStrategy = (ParcelStrategy) strategy;
+            }
+            else if (strategy instanceof DeliverStrategy){
+                deliverStrategy = (DeliverStrategy) strategy;
+            }
+
+
         }
         exploreStrategy.update(view);
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
         parcelStrategy.update(parcels);
+        if (parcels.containsKey(myPos)){
+            exploreStrategy.pickUp(myPos);
+        }
     }
 
     public void addStrategy(IStrategy strategy){

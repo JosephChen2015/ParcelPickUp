@@ -32,19 +32,31 @@ public class StrategyFactory {
         return instance;
     }
 
-    public ExploreStrategy getExploreStrategy() {
+    public ExploreStrategy getExploreStrategy(HashMap<Coordinate, MapTile> map) {
+        if (exploreStrategy == null){
+            this.exploreStrategy = new ExploreStrategy(map);
+        }
         return exploreStrategy;
     }
 
     public ParcelStrategy getParcelStrategy() {
+        if (parcelStrategy == null){
+            this.parcelStrategy = new ParcelStrategy();
+        }
         return parcelStrategy;
     }
 
-    public DeliverStrategy getDeliverStrategy() {
+    public DeliverStrategy getDeliverStrategy(HashMap<Coordinate, MapTile> map) {
+        if (deliverStrategy == null){
+            this.deliverStrategy = new DeliverStrategy(map);
+        }
         return deliverStrategy;
     }
 
     public CompositeStrategy getCompositeStrategy() {
+        if (compositeStrategy == null){
+            this.compositeStrategy = new CompositeStrategy();
+        }
         return compositeStrategy;
     }
 }

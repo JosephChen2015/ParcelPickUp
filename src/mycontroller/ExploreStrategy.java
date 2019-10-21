@@ -33,6 +33,10 @@ public class ExploreStrategy implements IStrategy{
         return this.explore;
     }
 
+    public void pickUp(Coordinate coord){
+        parcels.remove(coord);
+    }
+
     public void remove(Coordinate coord){
         this.explore.remove(coord);
     }
