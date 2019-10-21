@@ -44,6 +44,7 @@ public class MyAutoController extends CarController {
 
     @Override
     public void update() {
+
         if (getSpeed() == 0){
             this.speed = 0;
         }
@@ -55,11 +56,27 @@ public class MyAutoController extends CarController {
         Coordinate goal = compositeStrategy.getGoal(new Coordinate(getPosition()));
 
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), this.speed);
-        CarState a = searchRoute.aStar(car, goal);
+        CarState a = searchRoute.routeSearch(car, goal);
         if (a != null) {
             WorldSpatial.Direction direction = a.getDirec();
             float speed = a.getVelocity();
+            switch (this.speed){
+                case 1:
+                    if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.LEFT))) {
+                        turnLeft();
+                    } else if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.RIGHT))) {
+                        turnRight();
+                    }
+                    break;
+                case -1:
+                    if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.LEFT))) {
+                        turnRight();
+                    } else if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.RIGHT))) {
 
+                        turnLeft();
+                    }
+                    break;
+            }
             if (this.speed < speed) {
                 applyForwardAcceleration();
                 this.speed += 1;
@@ -68,11 +85,20 @@ public class MyAutoController extends CarController {
                 this.speed -= 1;
             }
 
-            if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.LEFT))) {
-                turnLeft();
-            } else if (direction.equals(WorldSpatial.changeDirection(getOrientation(), WorldSpatial.RelativeDirection.RIGHT))) {
-                turnRight();
-            }
         }
+//        else{
+//            if (this.speed == 1) {
+//                if (map.get(SearchRoute.move(car.getCoord(), getOrientation())).isType(MapTile.Type.WALL)) {
+//                    applyReverseAcceleration();
+//                    this.speed -= 1;
+//                }
+//            }
+//            else if (this.speed == -1){
+//                if (map.get(SearchRoute.move(car.getCoord(),WorldSpatial.reverseDirection(getOrientation()))).isType(MapTile.Type.WALL)){
+//                    applyForwardAcceleration();
+//                    this.speed += 1;
+//                }
+//            }
+//        }
     }
 }
