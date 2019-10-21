@@ -2,7 +2,7 @@ package mycontroller;
 
 import java.util.ArrayList;
 
-class NodeExpand {
+public class NodeExpand {
 
     private CarState state;
     private ArrayList<CarState> trace;
