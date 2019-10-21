@@ -18,7 +18,7 @@ public class SearchRoute {
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
     }
 
-    private static Coordinate move(Coordinate posit, WorldSpatial.Direction direct) {
+    private Coordinate move(Coordinate posit, WorldSpatial.Direction direct) {
         switch (direct) {
             case NORTH:
                 return new Coordinate(posit.x, posit.y + 1);
