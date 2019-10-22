@@ -34,7 +34,7 @@ public class MyAutoController extends CarController {
 
 
         for (Coordinate coord : map.keySet()){
-            if (!searchRoute.IsReachable(getPosition(), getOrientation(), coord)){
+            if (!searchRoute.isReachable(getPosition(), getOrientation(), coord)){
                 exploreStrategy.remove(coord);
             }
         }

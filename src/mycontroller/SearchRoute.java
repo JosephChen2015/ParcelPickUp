@@ -204,7 +204,7 @@ class SearchRoute {
         return null;
     }
 
-    public Boolean IsReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
+    public boolean isReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
     {
         return aStar(new CarState(new Coordinate(posit), orientation, 0), coord) != null;
     }
