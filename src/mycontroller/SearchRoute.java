@@ -138,7 +138,7 @@ class SearchRoute {
         return null;
     }
 
-    CarState routeSearch(CarState myState, Coordinate goal){
+    public CarState routeSearch(CarState myState, Coordinate goal){
         CarState a = aStar(myState,goal);
         if (a == null){
             return aStarPlus(myState,goal);
@@ -204,7 +204,7 @@ class SearchRoute {
         return null;
     }
 
-    Boolean IsReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
+    public Boolean IsReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
     {
         return aStar(new CarState(new Coordinate(posit), orientation, 0), coord) != null;
     }
