@@ -34,7 +34,7 @@ public class MyAutoController extends CarController {
 
 
         for (Coordinate coord : map.keySet()){
-            if (searchRoute.aStar(new CarState(new Coordinate(getPosition()), getOrientation(), 0), coord) == null){
+            if (!searchRoute.IsReachable(getPosition(), getOrientation(), coord)){
                 exploreStrategy.remove(coord);
             }
         }
@@ -86,19 +86,5 @@ public class MyAutoController extends CarController {
             }
 
         }
-//        else{
-//            if (this.speed == 1) {
-//                if (map.get(SearchRoute.move(car.getCoord(), getOrientation())).isType(MapTile.Type.WALL)) {
-//                    applyReverseAcceleration();
-//                    this.speed -= 1;
-//                }
-//            }
-//            else if (this.speed == -1){
-//                if (map.get(SearchRoute.move(car.getCoord(),WorldSpatial.reverseDirection(getOrientation()))).isType(MapTile.Type.WALL)){
-//                    applyForwardAcceleration();
-//                    this.speed += 1;
-//                }
-//            }
-//        }
     }
 }

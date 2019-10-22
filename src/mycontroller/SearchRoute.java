@@ -6,11 +6,11 @@ import world.WorldSpatial;
 
 import java.util.*;
 
-public class SearchRoute {
+class SearchRoute {
 
     private HashMap<Coordinate, MapTile> map;
 
-    public SearchRoute(HashMap<Coordinate, MapTile> map) {
+    SearchRoute(HashMap<Coordinate, MapTile> map) {
         this.map = map;
     }
 
@@ -138,7 +138,7 @@ public class SearchRoute {
         return null;
     }
 
-    public CarState routeSearch(CarState myState, Coordinate goal){
+    CarState routeSearch(CarState myState, Coordinate goal){
         CarState a = aStar(myState,goal);
         if (a == null){
             return aStarPlus(myState,goal);
@@ -149,7 +149,7 @@ public class SearchRoute {
 
     }
 
-    public CarState aStar(CarState myState, Coordinate goal) {
+    private CarState aStar(CarState myState, Coordinate goal) {
 
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
             NodeExpand n1 = (NodeExpand) o1;
@@ -202,6 +202,11 @@ public class SearchRoute {
 
         }
         return null;
+    }
+
+    Boolean IsReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
+    {
+        return aStar(new CarState(new Coordinate(posit), orientation, 0), coord) != null;
     }
 }
 
