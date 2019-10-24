@@ -5,6 +5,9 @@ import utilities.Coordinate;
 
 import java.util.HashMap;
 
+/**
+ * This class is a singleton factory of strategies, it provides extensibility for more strategies.
+ */
 public class StrategyFactory {
 
     private ExploreStrategy exploreStrategy;
@@ -18,6 +21,9 @@ public class StrategyFactory {
 
     }
 
+    /**
+     * @return return the single instance of the strategy factory.
+     */
     public static StrategyFactory getInstance(){
         if (instance == null){
             instance = new StrategyFactory();
@@ -25,6 +31,12 @@ public class StrategyFactory {
         return instance;
     }
 
+    /**
+     * Identify different strategies by their name.
+     * @param name of strategy
+     * @param map the explored map.
+     * @return an instance of a specific strategy.
+     */
     public IStrategy getStrategy(String name, HashMap<Coordinate, MapTile> map) {
         IStrategy strategy = null;
         switch (name){

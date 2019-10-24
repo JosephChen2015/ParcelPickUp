@@ -5,6 +5,9 @@ import tiles.TrapTile;
 import utilities.Coordinate;
 import java.util.HashMap;
 
+/**
+ * This class defines the strategies applying on exploring the map.
+ */
 public class ExploreStrategy implements IStrategy{
 
     private HashMap<Coordinate, MapTile> parcels = new HashMap<Coordinate, MapTile>();
@@ -18,6 +21,11 @@ public class ExploreStrategy implements IStrategy{
         }
     }
 
+    /**
+     * For each time the car obtain a new view, this method is called to update the stored explored map.
+     * @param observe a map of current view of car
+     * @return th explored map so far
+     */
     public HashMap<Coordinate, Boolean> update(HashMap<Coordinate, MapTile> observe){
         for (Coordinate coord : observe.keySet()){
             if (explore.containsKey(coord) && !explore.get(coord)){
@@ -41,6 +49,11 @@ public class ExploreStrategy implements IStrategy{
         this.explore.remove(coord);
     }
 
+    /**
+     * This function aims to find the nearest unexplored node as the goal of further exploration.
+     * @param posit current position of our car
+     * @return  the coordinate of the goal for next exploration
+     */
     @Override
     public Coordinate getGoal(Coordinate posit){
         int minDis = 99999;

@@ -1,5 +1,8 @@
 package mycontroller;
 
+/**
+ * This class defines the additional features of the car for further extension.
+ */
 public abstract class CarFeature {
     public int maximumForwardSpeed;
     public int maximumBackwardSpeed;

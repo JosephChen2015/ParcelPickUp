@@ -3,6 +3,9 @@ package mycontroller;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 
+/**
+ * This class represents the states of cars including the position, direction and velocity of it.
+ */
 public class CarState {
 
     private Coordinate coord;

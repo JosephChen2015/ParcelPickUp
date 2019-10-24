@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This object defines the strategy of search parcels,
+ * when there are parcels in view of our car, the nearest one will be our target.
+ */
 public class ParcelStrategy implements IStrategy {
 
     private ArrayList<Coordinate> parcels;

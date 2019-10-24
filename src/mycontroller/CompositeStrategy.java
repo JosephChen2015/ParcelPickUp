@@ -6,10 +6,18 @@ import utilities.Coordinate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This class applying the composite patterns for various strategies.
+ */
 public class CompositeStrategy implements IStrategy{
     private ArrayList<IStrategy> strategies = new ArrayList<IStrategy>();
     private boolean allCollected = false;
 
+    /**
+     * This method combines the getGoal() functions of all strategies and handling the logic of which strategy is used now.
+     * @param myPosit
+     * @return
+     */
     @Override
     public Coordinate getGoal(Coordinate myPosit) {
         ExploreStrategy exploreStrategy = null;
@@ -29,13 +37,13 @@ public class CompositeStrategy implements IStrategy{
         }
         Coordinate goal;
         HashMap<Coordinate, MapTile> parcels = exploreStrategy.getParcels();
-        if(!allCollected)
+        if(!allCollected) // if the required number of parcels is not collected
         {
-            if(parcels.size() != 0)
+            if(parcels.size() != 0) // if there is parcel available in explored map
             {
                 goal = parcelStrategy.getGoal(myPosit);
             }
-            else {
+            else {  // keep exploration
                 goal = exploreStrategy.getGoal(myPosit);
             }
         }

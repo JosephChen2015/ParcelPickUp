@@ -7,6 +7,9 @@ import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
 
+/**
+ * Our implementation of auto car controller.
+ */
 public class MyAutoController extends CarController {
 
     private HashMap<Coordinate, MapTile> map = getMap();
@@ -19,7 +22,8 @@ public class MyAutoController extends CarController {
     private SearchRoute searchRoute = new SearchRoute(this.map);
     private int speed;
     private boolean allCollected = false;
-    private CurrentCar carFeature;
+    private CurrentCar car;
+
     public MyAutoController(Car car) {
         super(car);
 
@@ -32,9 +36,9 @@ public class MyAutoController extends CarController {
         compositeStrategy.addStrategy(exploreStrategy);
         compositeStrategy.addStrategy(deliverStrategy);
 
-        this.carFeature = new CurrentCar();
+        this.car = new CurrentCar();
 
-        for (Coordinate coord : map.keySet()) {
+        for (Coordinate coord : map.keySet()) {//manual remove the parcels eaten from the goal list.
             if (!searchRoute.isReachable(getPosition(), getOrientation(), coord)) {
                 exploreStrategy.remove(coord);
             }
@@ -43,6 +47,10 @@ public class MyAutoController extends CarController {
         this.speed = 0;
     }
 
+    /**
+     * For each update operation, we update the explored map with the new view of car,
+     * and get goal according to the composite strategies.
+     */
     @Override
     public void update() {
 
@@ -58,10 +66,16 @@ public class MyAutoController extends CarController {
         CarState car = new CarState(new Coordinate(getPosition()), getOrientation(), this.speed);
         CarState a = searchRoute.routeSearch(car, goal);
         if (a != null) {
-            takeActions(a,this.carFeature);
+            takeActions(a,this.car);
         }
     }
 
+    /**
+     * Given the Car state for the next action and the limitations,
+     * transfer it to actual sequence of actions  can be taken from car.
+     * @param next the next car state.
+     * @param features limitations.
+     */
     private void takeActions(CarState next, CarFeature features){
         WorldSpatial.Direction direction = next.getDirec();
         float speed = next.getVelocity();

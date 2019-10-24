@@ -2,6 +2,10 @@ package mycontroller;
 
 import java.util.ArrayList;
 
+/**
+ * This class defines each node expanded of searching routes.
+ * It includes the state of car, an array list of nodes explored and the cost accumulated.
+ */
 public class NodeExpand {
 
     private CarState state;

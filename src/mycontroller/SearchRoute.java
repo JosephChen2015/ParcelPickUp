@@ -6,6 +6,10 @@ import world.WorldSpatial;
 
 import java.util.*;
 
+/**
+ * This class defines the algorithms for searching routes to a specific position.
+ * A* is used for searching available approaches. And the manhattan distance is regarded as our heuristic.
+ */
 class SearchRoute {
 
     private HashMap<Coordinate, MapTile> map;
@@ -32,6 +36,11 @@ class SearchRoute {
         return null;
     }
 
+    /**
+     * This function finds all possible successors of a given car state.
+     * @param carState
+     * @return an array list of carStates, which are the successors of input.
+     */
     private ArrayList<CarState> getSuccessors(CarState carState) {
 
         ArrayList<CarState> successors = new ArrayList<CarState>();
@@ -80,7 +89,13 @@ class SearchRoute {
         return successors;
     }
 
-
+    /**
+     * This function implements the A* algorithm using CarState representing each node explored.
+     * It is used for searching the routes to a specific goal.
+     * @param myState the current CarState
+     * @param goal the position of our current target
+     * @return The CarState can be reached in the next step.
+     */
     private CarState aStarPlus(CarState myState, Coordinate goal) {
 
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
@@ -93,7 +108,7 @@ class SearchRoute {
             } else {
                 return 0;
             }
-        });
+        });// defines the comparable NodeExpand Priority Queue
 
         ArrayList<CarState> closeList = new ArrayList<CarState>();
         ArrayList<CarState> trace = new ArrayList<CarState>();
@@ -103,7 +118,7 @@ class SearchRoute {
         CarState currentState;
         NodeExpand currentNode;
 
-        while (!openList.isEmpty()) {
+        while (!openList.isEmpty()) { //keep searching all the unexplored nedes
             currentNode = openList.poll();
             currentState = currentNode.getState();
             trace = currentNode.getTrace();
@@ -149,6 +164,13 @@ class SearchRoute {
 
     }
 
+    /**
+     * This function implements the A* algorithm using Coordinate representing each node explored.
+     * It is used for scanning maps before the game starts to find all reachable nodes.
+     * @param myState the current CarState
+     * @param goal the position of our current target
+     * @return The CarState can be reached in the next step.
+     */
     private CarState aStar(CarState myState, Coordinate goal) {
 
         PriorityQueue<NodeExpand> openList = new PriorityQueue<NodeExpand>(1000, (Comparator) (o1, o2) -> {
@@ -207,6 +229,7 @@ class SearchRoute {
     public boolean isReachable(String posit, WorldSpatial.Direction orientation, Coordinate coord)
     {
         return aStar(new CarState(new Coordinate(posit), orientation, 0), coord) != null;
+        //define the reachable node with there are at least one route to get to it.
     }
 }
 

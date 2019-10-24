@@ -5,7 +5,9 @@ import utilities.Coordinate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * This class defines the strategies applying on delivering the parcel to finish points.
+ */
 public class DeliverStrategy implements IStrategy{
 
     private ArrayList<Coordinate> exits;
@@ -21,7 +23,11 @@ public class DeliverStrategy implements IStrategy{
             }
         }
     }
-
+    /**
+     * This function aims to find the nearest finish point as the goal for win the game.
+     * @param myPosit current position of our car
+     * @return  the coordinate of the nearest finish point
+     */
     @Override
     public Coordinate getGoal(Coordinate myPosit)
     {
